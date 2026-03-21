@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOCX to PDF – Version 5 (Exact Text Size & Alignment)</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d6efd">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
@@ -33,7 +36,7 @@
             width: 210mm;
             min-height: 297mm;
             margin: 0 auto;
-            padding: 25mm 20mm;           /* Exact Word default margins */
+            padding: 25mm 20mm;           
             background: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
         }
@@ -48,8 +51,8 @@
 </head>
 <body>
     <div class="main-container">
-        <h1 class="text-center mb-4 text-primary fw-bold">📄 DOCX to PDF – Version 5</h1>
-        <p class="text-center text-muted mb-4">✅ Exact text size + alignment from your DOCX<br>✅ Image kept on page 2 (SBI photo)<br>No forced font changes</p>
+        <h1 class="text-center mb-4 text-primary fw-bold">DOCX to PDF – Version 5</h1>
+        <p class="text-center text-muted mb-4"> Exact text size + alignment from your DOCX<br>Image kept on page 2 (SBI photo)<br>No forced font changes</p>
 
         <div class="btn-stack">
             <button id="selectBtn" class="btn btn-primary btn-lg d-flex align-items-center">
@@ -76,14 +79,13 @@
 
         <div id="status" class="mt-4 alert alert-info text-center d-none"></div>
 
-        <!-- LIVE PREVIEW -->
+        
         <div id="previewSection" class="mt-4 d-none">
             <h5 class="text-center">Live Preview – Exact text size & alignment from your DOCX</h5>
             <div id="livePreview"></div>
         </div>
     </div>
 
-    <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
@@ -113,16 +115,16 @@
                 fileNameEl.textContent = selectedFile.name;
                 fileInfo.classList.remove('d-none');
                 previewBtn.disabled = false;
-                showStatus('✅ File selected.<br>Click "Show Live Preview" – text size & alignment will match your DOCX exactly.', 'success');
+                showStatus(' File selected.<br>Click "Show Live Preview" – text size & alignment will match your DOCX exactly.', 'success');
             } else {
-                showStatus('❌ Only .docx files allowed', 'danger');
+                showStatus(' Only .docx files allowed', 'danger');
             }
         });
 
         // STEP 2: LIVE PREVIEW (NO font override)
         previewBtn.addEventListener('click', async () => {
             if (!selectedFile) return;
-            showStatus('🔄 Generating preview with exact DOCX styles...', 'info');
+            showStatus('Generating preview with exact DOCX styles...', 'info');
             previewBtn.disabled = true;
 
             try {
@@ -135,11 +137,11 @@
                 livePreview.innerHTML = `<div class="a4">${cleanHTML}</div>`;
                 previewSection.classList.remove('d-none');
 
-                showStatus('✅ Preview now matches your DOCX text size & alignment!<br>Image on page 2.<br>Click "Download PDF".', 'success');
+                showStatus('Preview now matches your DOCX text size & alignment!<br>Image on page 2.<br>Click "Download PDF".', 'success');
                 convertBtn.disabled = false;
 
             } catch (err) {
-                showStatus('❌ Preview failed: ' + err.message, 'danger');
+                showStatus(' Preview failed: ' + err.message, 'danger');
             }
             previewBtn.disabled = false;
         });
@@ -147,11 +149,11 @@
         // STEP 3: CONVERT TO PDF (NO font override)
         convertBtn.addEventListener('click', async () => {
             if (!cleanHTML) {
-                showStatus('❌ Click "Show Live Preview" first', 'danger');
+                showStatus('Click "Show Live Preview" first', 'danger');
                 return;
             }
 
-            showStatus('🔄 Creating PDF with exact text size & alignment from DOCX...', 'info');
+            showStatus('Creating PDF with exact text size & alignment from DOCX...', 'info');
             convertBtn.disabled = true;
 
             try {
@@ -192,11 +194,11 @@
                 document.body.appendChild(a); a.click(); a.remove();
                 URL.revokeObjectURL(url);
 
-                showStatus(`✅ PDF created with EXACT text size & alignment!<br>Matches your original DOCX perfectly.`, 'success');
+                showStatus(`PDF created with EXACT text size & alignment!<br>Matches your original DOCX perfectly.`, 'success');
                 shareBtn.disabled = false;
 
             } catch (err) {
-                showStatus('❌ Error: ' + err.message, 'danger');
+                showStatus('Error: ' + err.message, 'danger');
             }
             convertBtn.disabled = false;
         });
@@ -208,9 +210,9 @@
 
             if (navigator.share && navigator.canShare({ files: [file] })) {
                 await navigator.share({ files: [file], title: 'Offer Letter PDF' });
-                showStatus('🎉 Shared successfully!', 'success');
+                showStatus('Shared successfully!', 'success');
             } else {
-                showStatus('✅ PDF downloaded again.<br>Attach in WhatsApp or Telegram.', 'warning');
+                showStatus(' PDF downloaded again.<br>Attach in WhatsApp or Telegram.', 'warning');
                 const url = URL.createObjectURL(pdfBlob);
                 const a = document.createElement('a'); a.href = url; a.download = pdfFileName; a.click();
                 URL.revokeObjectURL(url);
@@ -225,5 +227,12 @@
 
         showStatus('👆 Click button 1 → select Offer_Yogesh_share.docx<br>Then use button 2 to see exact match before downloading.', 'info');
     </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log("PWA Ready ✅"))
+        .catch(err => console.log("Error", err));}
+    </script>
+
 </body>
 </html>
