@@ -1,21 +1,25 @@
 const CACHE_NAME = "docx-pdf-v1";
 
 const urlsToCache = [
-  "./",
-  "./index.html",
-  "./manifest.json"
+    "./",
+    "./index.html",
+    "./app.js",
+    "./manifest.json",
+    "./icon.png",
 ];
 
+// Install
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(urlsToCache))
+    );
 });
 
+// Fetch
 self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => response || fetch(event.request))
+    );
 });

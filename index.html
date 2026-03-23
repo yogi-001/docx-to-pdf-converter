@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -117,85 +116,6 @@ Selected: <span id="fileName"></span>
 <!-- Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.11.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
-
-<script>
-let selectedFile = null;
-let cleanHTML = "";
-
-const selectBtn = document.getElementById('selectBtn');
-const fileInput = document.getElementById('fileInput');
-const previewBtn = document.getElementById('previewBtn');
-const convertBtn = document.getElementById('convertBtn');
-
-const fileInfo = document.getElementById('fileInfo');
-const fileNameEl = document.getElementById('fileName');
-const statusEl = document.getElementById('status');
-
-const previewSection = document.getElementById('previewSection');
-const livePreview = document.getElementById('livePreview');
-
-selectBtn.onclick = () => fileInput.click();
-
-fileInput.onchange = (e) => {
-    selectedFile = e.target.files[0];
-
-    if (selectedFile && selectedFile.name.endsWith(".docx")) {
-        fileNameEl.textContent = selectedFile.name;
-        fileInfo.classList.remove("d-none");
-        previewBtn.disabled = false;
-        showStatus("✅ File selected", "success");
-    } else {
-        showStatus("❌ Only DOCX allowed", "danger");
-    }
-};
-
-// PREVIEW
-previewBtn.onclick = async () => {
-    const buffer = await selectedFile.arrayBuffer();
-
-    const result = await mammoth.convertToHtml({ arrayBuffer: buffer });
-
-    cleanHTML = result.value;
-
-    livePreview.innerHTML = `<div class="a4">${cleanHTML}</div>`;
-    previewSection.classList.remove("d-none");
-
-    convertBtn.disabled = false;
-    showStatus("✅ Preview Ready", "success");
-};
-
-// PDF
-convertBtn.onclick = async () => {
-
-    const container = document.createElement("div");
-    container.innerHTML = cleanHTML;
-
-    container.style.cssText = `
-        width:210mm;
-        min-height:297mm;
-        padding:25mm 20mm;
-        background:white;
-    `;
-
-    const opt = {
-        margin: 0,
-        filename: selectedFile.name.replace(".docx", ".pdf"),
-        html2canvas: { scale: 3 },
-        jsPDF: { unit: 'mm', format: 'a4' }
-    };
-
-    await html2pdf().set(opt).from(container).save();
-
-    showStatus("✅ PDF Downloaded", "success");
-};
-
-function showStatus(msg, type) {
-    statusEl.innerHTML = msg;
-    statusEl.className = `alert alert-${type}`;
-    statusEl.classList.remove("d-none");
-}
-
-</script>
 
 <!-- 🔥 SERVICE WORKER -->
 <script>
